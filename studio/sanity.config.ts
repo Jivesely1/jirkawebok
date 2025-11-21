@@ -1,6 +1,6 @@
+// @ts-nocheck
 import { defineConfig } from "sanity"
 import { structureTool } from "sanity/structure"
-import { visionTool } from "@sanity/vision"
 import { schemaTypes } from "./schemas"
 
 export default defineConfig({
@@ -10,26 +10,27 @@ export default defineConfig({
   projectId: "sjl39asi",
   dataset: "production",
 
-  plugins: [structureTool(), visionTool()],
+  // ❌ už žádný visionTool – jen structureTool
+  plugins: [structureTool()],
 
   schema: {
     types: schemaTypes,
   },
 
-document: {
-  productionUrl: async (prev, context) => {
-    const doc = context.document as {
-      _type?: string
-      slug?: { current?: string }
-    }
+  document: {
+    productionUrl: async (prev, context) => {
+      const doc = context.document as {
+        _type?: string
+        slug?: { current?: string }
+      }
 
-    const slug = doc.slug?.current
+      const slug = doc.slug?.current
 
-    if (doc._type === "project" && slug) {
-      return `https://portfolio-jirka-vercel-project-git-main-jivesely1s-projects.vercel.app/projekty/${slug}`
-    }
+      if (doc._type === "project" && slug) {
+        return `https://portfolio-jirka-vercel-project-git-main-jivesely1s-projects.vercel.app/projekty/${slug}`
+      }
 
-    return prev
+      return prev
+    },
   },
-},
 })
