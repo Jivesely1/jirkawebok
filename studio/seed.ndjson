@@ -1,0 +1,8 @@
+{"_id": "project-eshop", "_type": "project", "title": "E‑shop s elektronikou", "description": "Kompletní návrh a vývoj rychlého e‑shopu s integrací plateb a správou skladu."}
+{"_id": "project-saas", "_type": "project", "title": "SaaS dashboard", "description": "Admin rozhraní pro správu uživatelů a faktur, real‑time statistiky a notifikace."}
+{"_id": "project-portfolio", "_type": "project", "title": "Osobní portfolio", "description": "Minimalistický osobní web zaměřený na rychlost načítání a SEO."}
+{"_id": "service-webapps", "_type": "service", "title": "Tvorba webových aplikací", "description": "Od prvního návrhu až po nasazení do produkce. Next.js, React, Node.js.", "order": 0}
+{"_id": "service-redesign", "_type": "service", "title": "Redesign a optimalizace", "description": "Zrychlení a omlazení stávajících webů, lepší UX a konverze.", "order": 1}
+{"_id": "service-consulting", "_type": "service", "title": "Technické konzultace", "description": "Pomoc s výběrem technologií, architekturou a integracemi.", "order": 2}
+{"_id": "ref-martin", "_type": "referenceItem", "name": "Martin Novák", "company": "CEO, Novatech s.r.o.", "text": "Spolupráce byla rychlá a profesionální. Výsledek předčil očekávání."}
+{"_id": "ref-petra", "_type": "referenceItem", "name": "Petra Dvořáková", "company": "Marketing manager, Creatia.cz", "text": "Skvělá komunikace a jasný přístup. Doporučuji pro webové projekty."}
