@@ -1,20 +1,20 @@
 import { createClient } from "next-sanity"
 
-// ✅ Sanity klient
+// Sanity klient (env → funguje lokálně i na Vercelu)
 export const client = createClient({
-  projectId: "sjl39asi", // tvoje ID projektu
-  dataset: "production",
-  apiVersion: "2025-01-01",
-  useCdn: true, // rychlejší načítání
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION!,
+  useCdn: true,
 })
 
-// 🧩 Typy dat (shodné se schématy v CMS)
+// 🧩 Typy dat
 export interface SanityProject {
   _id: string
   title: string
   description: string
   imageUrl?: string
-  slug?: { current: string }   // ✅ přidáno kvůli detailní stránce
+  slug?: { current: string }
 }
 
 export interface SanityService {
@@ -34,12 +34,11 @@ export interface SanityReference {
 export interface SanitySkill {
   _id: string
   name: string
-  emoji?: string   // ✅ opraveno z "icon" → "emoji" podle tvého CMS datasetu
+  emoji?: string
 }
 
 // 📡 Funkce pro načítání dat z CMS
 
-// Projekty
 export async function getProjects(): Promise<SanityProject[]> {
   try {
     return await client.fetch(`
@@ -52,12 +51,11 @@ export async function getProjects(): Promise<SanityProject[]> {
       } | order(_createdAt desc)
     `)
   } catch (e) {
-    console.error('❌ Chyba při načítání projektů:', e)
+    console.error("❌ Chyba při načítání projektů:", e)
     return []
   }
 }
 
-// Služby
 export async function getServices(): Promise<SanityService[]> {
   try {
     return await client.fetch(`
@@ -74,7 +72,6 @@ export async function getServices(): Promise<SanityService[]> {
   }
 }
 
-// Reference
 export async function getReferences(): Promise<SanityReference[]> {
   try {
     return await client.fetch(`
@@ -91,7 +88,6 @@ export async function getReferences(): Promise<SanityReference[]> {
   }
 }
 
-// Dovednosti
 export async function getSkills(): Promise<SanitySkill[]> {
   try {
     return await client.fetch(`
