@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "ignore": "echo \"skip sanity build\""
+    "ignore": "exit 1"
   },
   "dependencies": {
     "@sanity/client": "^6.29.1",
