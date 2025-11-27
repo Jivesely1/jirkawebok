@@ -10,26 +10,38 @@ export default {
   theme: {
     extend: {
       colors: {
-        "brand-bg": "#f8f9fb",
-        "brand-bgDark": "#0b0e14",
+        brand: {
+          // pozadí
+          bg: "#f5f7fb",       // hlavní světlejší background
+          bgDark: "#0b0e14",   // deep navy dark
 
-        "brand-surface": "#ffffff",
-        "brand-surfaceDark": "#11151c",
+          // panely / karty
+          surface: "#ffffff",
+          surfaceDark: "#11151c",
 
-        "brand-border": "rgba(0,0,0,0.08)",
-        "brand-borderDark": "rgba(255,255,255,0.08)",
+          // text
+          text: "#0f172a",
+          textMuted: "#4b5563",
+          textDark: "#e5e7eb",
+          textMutedDark: "#9ca3af",
 
-        "brand-text": "#111827",
-        "brand-textDark": "#e4e7ec",
+          // border
+          border: "#e5e7eb",
+          borderDark: "#1f2937",
 
-        "brand-textMuted": "#6b7280",
-        "brand-textMutedDark": "#9ca3af",
-
-        "brand-accent": "#6366f1",
-        "brand-accentHover": "#818cf8",
+          // akcent (brand)
+          accent: "#6366f1",
+          accentHover: "#4f46e5",
+        },
       },
+
       boxShadow: {
-        card: "0 4px 24px rgba(0,0,0,0.08)",
+        card: "0 18px 45px rgba(15,23,42,0.18)",
+        soft: "0 8px 25px rgba(15,23,42,0.12)",
+      },
+
+      borderRadius: {
+        "2xl": "1.5rem",
       },
     },
   },
