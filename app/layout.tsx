@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Header from "../components/Header"; // Uprav cestu podle projektu
 import { Plus_Jakarta_Sans } from "next/font/google";
 import CookieConsent from "../components/CookieConsent";
+import Analytics from "../components/Analytics";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {/* Obsah */}
           <main className="pt-4">{children}</main>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
