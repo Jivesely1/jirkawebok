@@ -7,6 +7,7 @@ import CookieConsent from "../components/CookieConsent";
 
 import AnalyticsGA from "../components/Analytics"; // ← tvoje Google Analytics (už máš)
 import { Analytics } from "@vercel/analytics/next"; // ← Vercel Analytics
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
         {/* Vercel Analytics */}
         <Analytics />
+        <SpeedInsights/>
       </body>
     </html>
   );
