@@ -1,10 +1,12 @@
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
-import Header from "../components/Header"; // Uprav cestu podle projektu
+import Header from "../components/Header";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import CookieConsent from "../components/CookieConsent";
-import Analytics from "../components/Analytics";
+
+import AnalyticsGA from "../components/Analytics"; // ← tvoje Google Analytics (už máš)
+import { Analytics } from "@vercel/analytics/next"; // ← Vercel Analytics
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -20,7 +22,6 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="cs" suppressHydrationWarning>
-      {/* Light/Dark pozadí řeší TAILWIND, ne natvrdo barvy */}
       <body className="min-h-screen bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
         <ThemeProvider
           attribute="class"
@@ -29,10 +30,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           disableTransitionOnChange
         >
           <Header />
-<CookieConsent />
-          {/* Obsah */}
+          <CookieConsent />
           <main className="pt-4">{children}</main>
         </ThemeProvider>
+
+        {/* Google Analytics */}
+        <AnalyticsGA />
+
+        {/* Vercel Analytics */}
         <Analytics />
       </body>
     </html>
