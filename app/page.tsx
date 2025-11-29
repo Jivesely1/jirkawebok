@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
-import ContactSection from "../components/ContactForm";
+
 
 
 
@@ -426,7 +426,10 @@ export default function PortfolioPage() {
 
 
        */}
-      <ContactSection />
+      <div className="max-w-xl mx-auto py-10">
+      <h1 className="text-3xl font-bold mb-4">Kontakt</h1>
+
+    </div>
 
       </main>
     </div>
