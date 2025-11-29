@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
+import ContactSection from "../components/ContactForm";
+
+
 
 import {
   getProjects,
@@ -377,7 +380,7 @@ export default function PortfolioPage() {
           </div>
         </section>
 
-        {/* KONTAKT – barevný gradient */}
+        {/* 
         <section
           id="kontakt"
           className="py-18 md:py-20 bg-gradient-to-br from-indigo-600 to-indigo-800 text-center text-white"
@@ -420,6 +423,11 @@ export default function PortfolioPage() {
             </div>
           </div>
         </section>
+
+
+       */}
+      <ContactSection />
+
       </main>
     </div>
   );
