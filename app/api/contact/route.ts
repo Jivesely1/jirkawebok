@@ -7,9 +7,8 @@ export async function POST(req: Request) {
   try {
     const { name, email, message, honey } = await req.json();
 
-    // BOT ochrana – pokud je honey vyplněné → neodesílat
     if (honey && honey.trim() !== "") {
-      return NextResponse.json({ ok: true }); 
+      return NextResponse.json({ ok: true });
     }
 
     const transporter = nodemailer.createTransport({
@@ -20,6 +19,7 @@ export async function POST(req: Request) {
       },
     });
 
+    // 1) Email TOBĚ
     await transporter.sendMail({
       from: `"Web Portfolio" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_TO,
@@ -32,9 +32,27 @@ export async function POST(req: Request) {
       `,
     });
 
+    // 2) Kopie EMAIL odesílateli
+    await transporter.sendMail({
+      from: `"Web Portfolio" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Kopie zprávy – děkujeme za kontakt",
+      html: `
+        <p>Ahoj ${name},</p>
+        <p>Děkujeme za tvoji zprávu! Brzy se ti ozvu.</p>
+        <p><strong>Tvoje zpráva:</strong></p>
+        <p>${message}</p>
+        <br/><p>— Jirka Veselý, portfolio</p>
+      `,
+    });
+
     return NextResponse.json({ ok: true });
+
   } catch (error) {
     console.error("EMAIL ERROR:", error);
-    return NextResponse.json({ ok: false, error: "Email se nepodařilo odeslat" }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "Email se nepodařilo odeslat" },
+      { status: 500 }
+    );
   }
 }
