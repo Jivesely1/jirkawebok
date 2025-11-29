@@ -65,23 +65,7 @@ export default function ContactSection() {
       <section className="w-full py-10 bg-slate-50 dark:bg-slate-900 transition-colors">
         <div className="mx-auto max-w-4xl px-4">
 
-          {/* Nadpis s telefonem nad formulářem */}
-          <div className="text-center mb-2">
-            <div className="inline-flex items-center gap-2 justify-center text-indigo-600 dark:text-indigo-400 font-semibold">
-              <Phone className="w-5 h-5" />
-              <span>Kontakt</span>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
-              Preferuješ zavolat? Klidně mi cinkni na{" "}
-              <a
-                href="tel:+420777000000"
-                className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
-              >
-                +420&nbsp;777&nbsp;000&nbsp;000
-              </a>
-              .
-            </p>
-          </div>
+         
 
           {/* GLASS karta */}
           <div className="mt-4 rounded-[28px] p-[1px] bg-gradient-to-br from-indigo-300/40 via-sky-200/40 to-indigo-300/40 dark:from-slate-700 dark:via-slate-800 dark:to-slate-700 shadow-xl">
