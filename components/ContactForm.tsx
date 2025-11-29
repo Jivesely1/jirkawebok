@@ -2,7 +2,7 @@
 
 import { useState, useMemo, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Mail, Type, MessageCircle, Phone, CheckCircle2, X } from "lucide-react";
+import { User, Mail, Type, MessageCircle, CheckCircle2, X } from "lucide-react";
 
 export default function ContactSection() {
   const [success, setSuccess] = useState(false);
@@ -64,8 +64,6 @@ export default function ContactSection() {
     <>
       <section className="w-full py-10 bg-slate-50 dark:bg-slate-900 transition-colors">
         <div className="mx-auto max-w-4xl px-4">
-
-         
 
           {/* GLASS karta */}
           <div className="mt-4 rounded-[28px] p-[1px] bg-gradient-to-br from-indigo-300/40 via-sky-200/40 to-indigo-300/40 dark:from-slate-700 dark:via-slate-800 dark:to-slate-700 shadow-xl">
