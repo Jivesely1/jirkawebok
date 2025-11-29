@@ -20,6 +20,7 @@ import type {
   SanityReference,
   SanitySkill,
 } from "../lib/types";
+import ContactSection from "../components/ContactForm";
 
 const fadeInSection: Variants = {
   initial: { opacity: 0, y: 40 },
@@ -426,6 +427,7 @@ export default function PortfolioPage() {
 
 
        */}
+       <ContactSection />
       <div className="max-w-xl mx-auto py-10">
       <h1 className="text-3xl font-bold mb-4">Kontakt</h1>
 
