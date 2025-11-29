@@ -428,8 +428,10 @@ export default function PortfolioPage() {
 
        */}
        
-      <div className="max-w-xl mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-4">Kontakt</h1>
+      <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-indigo-600 dark:text-indigo-400 text-center mb-8 sm:mb-10">
+              Kontakt
+            </h2>
 <ContactSection />
     </div>
 
