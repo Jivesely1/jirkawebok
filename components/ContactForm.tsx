@@ -1,18 +1,17 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Mail, Type, MessageCircle, CheckCircle2, X } from "lucide-react";
+import { User, Mail, Type, MessageCircle, Phone, CheckCircle2, X } from "lucide-react";
 
 export default function ContactSection() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 🔢 Dynamická antispam otázka – při každém reloadu jiné číslo
   const { questionA, questionB, solution } = useMemo(() => {
-    const a = Math.floor(Math.random() * 6) + 2; // 2–7
-    const b = Math.floor(Math.random() * 6) + 2; // 2–7
+    const a = Math.floor(Math.random() * 6) + 2;
+    const b = Math.floor(Math.random() * 6) + 2;
     return { questionA: a, questionB: b, solution: a + b };
   }, []);
 
@@ -31,7 +30,6 @@ export default function ContactSection() {
     const spamCheck = (form.elements.namedItem("spamCheck") as HTMLInputElement).value;
     const honey = (form.elements.namedItem("honey") as HTMLInputElement).value;
 
-    // Honeypot: pokud to bot vyplní, tváříme se, že je vše OK, ale nic neposíláme
     if (honey.trim() !== "") {
       setLoading(false);
       setSuccess(true);
@@ -39,7 +37,6 @@ export default function ContactSection() {
       return;
     }
 
-    // Kontrola antispamu
     if (parseInt(spamCheck) !== solution) {
       setLoading(false);
       setError("Špatná odpověď na kontrolní otázku.");
@@ -59,45 +56,62 @@ export default function ContactSection() {
       setSuccess(true);
       form.reset();
     } else {
-      setError(data.error || "Něco se nepovedlo. Zkus to prosím znovu.");
+      setError("Něco se nepovedlo. Zkus to prosím znovu.");
     }
   }
 
   return (
     <>
-      <section className="w-full py-28 bg-slate-100 dark:bg-slate-950 transition-colors">
-        <div className="mx-auto max-w-5xl px-4">
-          {/* Gradient rámeček kolem skleněné karty */}
-          <div className="rounded-[32px] p-[1px] bg-gradient-to-r from-indigo-500 via-sky-400 to-violet-500 shadow-2xl">
-            <div className="rounded-[30px] bg-white/80 dark:bg-slate-900/85 backdrop-blur-xl border border-white/40 dark:border-slate-700 px-8 md:px-12 py-10 md:py-14">
-              <div className="text-center mb-10">
-                <p className="text-xs uppercase tracking-[0.3em] text-indigo-600 dark:text-indigo-400 mb-2">
-                  Kontakt
-                </p>
-                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
+      <section className="w-full py-10 bg-slate-50 dark:bg-slate-900 transition-colors">
+        <div className="mx-auto max-w-4xl px-4">
+
+          {/* Nadpis s telefonem nad formulářem */}
+          <div className="text-center mb-2">
+            <div className="inline-flex items-center gap-2 justify-center text-indigo-600 dark:text-indigo-400 font-semibold">
+              <Phone className="w-5 h-5" />
+              <span>Kontakt</span>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
+              Preferuješ zavolat? Klidně mi cinkni na{" "}
+              <a
+                href="tel:+420777000000"
+                className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                +420&nbsp;777&nbsp;000&nbsp;000
+              </a>
+              .
+            </p>
+          </div>
+
+          {/* GLASS karta */}
+          <div className="mt-4 rounded-[28px] p-[1px] bg-gradient-to-br from-indigo-300/40 via-sky-200/40 to-indigo-300/40 dark:from-slate-700 dark:via-slate-800 dark:to-slate-700 shadow-xl">
+            <div className="rounded-[26px] bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl border border-white/40 dark:border-slate-700 px-6 md:px-10 py-8 md:py-10">
+
+              {/* Nadpis v kartě */}
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
                   Pojďme to probrat
                 </h2>
-                <p className="mt-3 text-sm md:text-base text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-                  Napiš mi pár informací o projektu a ozvu se ti do 24 hodin s dalším postupem.
+                <p className="mt-1 text-slate-600 dark:text-slate-300 text-sm">
+                  Napiš mi pár informací o projektu a ozvu se ti do 24 hodin.
                 </p>
               </div>
 
-              <form className="space-y-7" onSubmit={handleSubmit}>
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <input type="text" name="honey" className="hidden" />
 
-                {/* Jméno + E-mail */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Jméno + email */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <FloatingInput
                     name="name"
-                    label="Jméno *"
+                    label="Jméno"
                     placeholder="Např. Jan Novák"
                     icon={<User className="w-4 h-4" />}
-                    type="text"
                     required
                   />
                   <FloatingInput
                     name="email"
-                    label="E-mail *"
+                    label="E-mail"
                     placeholder="email@domena.cz"
                     icon={<Mail className="w-4 h-4" />}
                     type="email"
@@ -108,40 +122,30 @@ export default function ContactSection() {
                 {/* Předmět */}
                 <FloatingInput
                   name="subject"
-                  label="Předmět zprávy *"
-                  placeholder="Např. Potřebujeme nový firemní web"
+                  label="Předmět zprávy"
+                  placeholder="Např. Nový web"
                   icon={<Type className="w-4 h-4" />}
-                  type="text"
                   required
                 />
 
                 {/* Zpráva */}
                 <FloatingTextarea
                   name="message"
-                  label="Zpráva *"
-                  placeholder="Popiš stručně svůj projekt, cíle a rozpočet…"
+                  label="Zpráva"
+                  placeholder="Popiš stručně svůj projekt…"
                   icon={<MessageCircle className="w-4 h-4" />}
                   required
                 />
 
-                {/* Antispam */}
-                <div className="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-4 items-end">
-                  <div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">
-                      Malá kontrola, že nejsi robot:
-                    </p>
-                    <p className="inline-flex items-center px-3 py-1 rounded-full bg-slate-900/5 dark:bg-white/5 text-xs font-medium text-slate-700 dark:text-slate-200">
-                      Výsledek příkladu{" "}
-                      <span className="mx-1 font-semibold">
-                        {questionA} + {questionB}
-                      </span>
-                      ?
-                    </p>
-                  </div>
+                {/* Kontrola */}
+                <div>
+                  <label className="text-sm text-slate-600 dark:text-slate-300">
+                    Kontrolní otázka: <strong>{questionA} + {questionB}</strong> =
+                  </label>
                   <FloatingInput
                     name="spamCheck"
-                    label="Odpověď *"
-                    placeholder="Sem napiš výsledek"
+                    label=""
+                    placeholder="Výsledek"
                     icon={null}
                     type="number"
                     required
@@ -149,18 +153,17 @@ export default function ContactSection() {
                 </div>
 
                 <motion.button
-                  whileHover={{ y: -1, scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
+                  whileHover={{ y: -2, scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 rounded-2xl bg-indigo-600 text-white text-lg font-semibold 
-                    shadow-lg shadow-indigo-500/40 hover:bg-indigo-500 transition disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-semibold shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {loading ? "Odesílám…" : "Odeslat zprávu"}
                 </motion.button>
 
                 {error && (
-                  <p className="text-center text-sm text-red-500 mt-2">
+                  <p className="text-center text-sm text-red-500 mt-1">
                     {error}
                   </p>
                 )}
@@ -170,7 +173,7 @@ export default function ContactSection() {
         </div>
       </section>
 
-      {/* ✅ Success modal */}
+      {/* SUCCESS MODAL */}
       <AnimatePresence>
         {success && (
           <motion.div
@@ -196,18 +199,11 @@ export default function ContactSection() {
               <div className="flex flex-col items-center text-center space-y-3">
                 <CheckCircle2 className="w-10 h-10 text-green-500" />
                 <h3 className="text-xl font-semibold text-slate-900 dark:text-white">
-                  Zpráva byla úspěšně odeslána 📩
+                  Zpráva byla úspěšně odeslána!
                 </h3>
                 <p className="text-sm text-slate-600 dark:text-slate-300">
-                  Díky za důvěru. Jakmile to projdu, ozvu se ti s návrhem dalšího postupu.
+                  Ozvu se ti co nejdříve. Díky za důvěru.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => setSuccess(false)}
-                  className="mt-3 inline-flex items-center px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-500"
-                >
-                  Zavřít
-                </button>
               </div>
             </motion.div>
           </motion.div>
@@ -217,13 +213,13 @@ export default function ContactSection() {
   );
 }
 
-/* ───────────── Pomocné komponenty pro plovoucí labely ───────────── */
+/* ───────────── FLOATING INPUT ───────────── */
 
 type FloatingInputProps = {
   name: string;
-  label: string;
+  label?: string;
   placeholder: string;
-  icon: React.ReactNode | null;
+  icon?: ReactNode | null;
   type?: string;
   required?: boolean;
 };
@@ -239,7 +235,7 @@ function FloatingInput({
   return (
     <div className="relative">
       {icon && (
-        <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500 pointer-events-none">
+        <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">
           {icon}
         </span>
       )}
@@ -248,31 +244,33 @@ function FloatingInput({
         type={type}
         required={required}
         placeholder=" "
-        className={`w-full peer rounded-2xl border border-slate-300 dark:border-slate-700 
-        bg-white/80 dark:bg-slate-900/70 text-slate-900 dark:text-slate-100 
-        shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none
-        px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-2 text-sm`}
+        className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 
+        bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
+        focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-2 text-sm`}
       />
-      <label
-        className={`pointer-events-none absolute text-xs text-slate-500 dark:text-slate-400 
-        top-2 ${icon ? "left-10" : "left-3"} 
-        transition-all duration-200 
-        peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm 
-        peer-placeholder-shown:text-slate-500 peer-focus:top-1 
-        peer-focus:text-[11px] peer-focus:text-indigo-500`}
-      >
-        {label}
-      </label>
+      {label && (
+        <label
+          className={`absolute text-xs text-slate-600 dark:text-slate-400 top-2 
+          ${icon ? "left-10" : "left-3"} 
+          transition-all duration-200 
+          peer-focus:top-1 peer-focus:text-indigo-500 peer-placeholder-shown:top-3 
+          peer-placeholder-shown:text-sm`}
+        >
+          {label}
+        </label>
+      )}
       <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{placeholder}</p>
     </div>
   );
 }
 
+/* ───────────── FLOATING TEXTAREA ───────────── */
+
 type FloatingTextareaProps = {
   name: string;
   label: string;
   placeholder: string;
-  icon: React.ReactNode | null;
+  icon?: ReactNode | null;
   required?: boolean;
 };
 
@@ -286,7 +284,7 @@ function FloatingTextarea({
   return (
     <div className="relative">
       {icon && (
-        <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500 pointer-events-none">
+        <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">
           {icon}
         </span>
       )}
@@ -295,18 +293,15 @@ function FloatingTextarea({
         required={required}
         placeholder=" "
         rows={5}
-        className={`w-full peer rounded-2xl border border-slate-300 dark:border-slate-700 
-        bg-white/80 dark:bg-slate-900/70 text-slate-900 dark:text-slate-100 
-        shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none
-        px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-3 text-sm resize-vertical`}
+        className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 
+        bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
+        focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-3 text-sm resize-vertical`}
       />
       <label
-        className={`pointer-events-none absolute text-xs text-slate-500 dark:text-slate-400 
-        top-2 ${icon ? "left-10" : "left-3"} 
-        transition-all duration-200 
-        peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm 
-        peer-placeholder-shown:text-slate-500 peer-focus:top-1 
-        peer-focus:text-[11px] peer-focus:text-indigo-500`}
+        className={`absolute text-xs text-slate-600 dark:text-slate-400 top-2 
+        ${icon ? "left-10" : "left-3"} transition-all duration-200 
+        peer-focus:top-1 peer-focus:text-indigo-500 peer-placeholder-shown:top-3 
+        peer-placeholder-shown:text-sm`}
       >
         {label}
       </label>
