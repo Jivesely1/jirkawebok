@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Type, MessageCircle, CheckCircle2, X } from "lucide-react";
 
@@ -8,11 +8,15 @@ export default function ContactSection() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [questionA, setQuestionA] = useState(0);
+  const [questionB, setQuestionB] = useState(0);
 
-  const { questionA, questionB, solution } = useMemo(() => {
+  useEffect(() => {
+    // Generujeme kontrolní čísla jen na klientovi (řeší hydration)
     const a = Math.floor(Math.random() * 6) + 2;
     const b = Math.floor(Math.random() * 6) + 2;
-    return { questionA: a, questionB: b, solution: a + b };
+    setQuestionA(a);
+    setQuestionB(b);
   }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -22,7 +26,6 @@ export default function ContactSection() {
     setLoading(true);
 
     const form = e.currentTarget;
-
     const name = (form.elements.namedItem("name") as HTMLInputElement).value;
     const email = (form.elements.namedItem("email") as HTMLInputElement).value;
     const subject = (form.elements.namedItem("subject") as HTMLInputElement).value;
@@ -37,7 +40,7 @@ export default function ContactSection() {
       return;
     }
 
-    if (parseInt(spamCheck) !== solution) {
+    if (parseInt(spamCheck) !== questionA + questionB) {
       setLoading(false);
       setError("Špatná odpověď na kontrolní otázku.");
       return;
@@ -46,7 +49,7 @@ export default function ContactSection() {
     const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, subject, message, honey }),
+      body: JSON.stringify({ name, email, subject, message }),
     });
 
     const data = await res.json();
@@ -64,16 +67,11 @@ export default function ContactSection() {
     <>
       <section className="w-full py-10 bg-slate-50 dark:bg-slate-900 transition-colors">
         <div className="mx-auto max-w-4xl px-4">
-
-          {/* GLASS karta */}
           <div className="mt-4 rounded-[28px] p-[1px] bg-gradient-to-br from-indigo-300/40 via-sky-200/40 to-indigo-300/40 dark:from-slate-700 dark:via-slate-800 dark:to-slate-700 shadow-xl">
             <div className="rounded-[26px] bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl border border-white/40 dark:border-slate-700 px-6 md:px-10 py-8 md:py-10">
 
-              {/* Nadpis v kartě */}
               <div className="text-center mb-6">
-                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
-                  Pojďme to probrat
-                </h2>
+                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">Pojďme to probrat</h2>
                 <p className="mt-1 text-slate-600 dark:text-slate-300 text-sm">
                   Napiš mi pár informací o projektu a ozvu se ti do 24 hodin.
                 </p>
@@ -82,56 +80,20 @@ export default function ContactSection() {
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <input type="text" name="honey" className="hidden" />
 
-                {/* Jméno + email */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <FloatingInput
-                    name="name"
-                    label="Jméno"
-                    placeholder="Např. Jan Novák"
-                    icon={<User className="w-4 h-4" />}
-                    required
-                  />
-                  <FloatingInput
-                    name="email"
-                    label="E-mail"
-                    placeholder="email@domena.cz"
-                    icon={<Mail className="w-4 h-4" />}
-                    type="email"
-                    required
-                  />
+                  <FloatingInput name="name" label="Jméno" placeholder="Např. Jan Novák" icon={<User className="w-4 h-4" />} required />
+                  <FloatingInput name="email" label="E-mail" placeholder="email@domena.cz" icon={<Mail className="w-4 h-4" />} type="email" required />
                 </div>
 
-                {/* Předmět */}
-                <FloatingInput
-                  name="subject"
-                  label="Předmět zprávy"
-                  placeholder="Např. Nový web"
-                  icon={<Type className="w-4 h-4" />}
-                  required
-                />
+                <FloatingInput name="subject" label="Předmět zprávy" placeholder="Např. Nový web" icon={<Type className="w-4 h-4" />} required />
 
-                {/* Zpráva */}
-                <FloatingTextarea
-                  name="message"
-                  label="Zpráva"
-                  placeholder="Popiš stručně svůj projekt…"
-                  icon={<MessageCircle className="w-4 h-4" />}
-                  required
-                />
+                <FloatingTextarea name="message" label="Zpráva" placeholder="Popiš stručně svůj projekt…" icon={<MessageCircle className="w-4 h-4" />} required />
 
-                {/* Kontrola */}
                 <div>
                   <label className="text-sm text-slate-600 dark:text-slate-300">
                     Kontrolní otázka: <strong>{questionA} + {questionB}</strong> =
                   </label>
-                  <FloatingInput
-                    name="spamCheck"
-                    label=""
-                    placeholder="Výsledek"
-                    icon={null}
-                    type="number"
-                    required
-                  />
+                  <FloatingInput name="spamCheck" label="" placeholder="Výsledek" icon={null} type="number" required />
                 </div>
 
                 <motion.button
@@ -155,7 +117,6 @@ export default function ContactSection() {
         </div>
       </section>
 
-      {/* SUCCESS MODAL */}
       <AnimatePresence>
         {success && (
           <motion.div
@@ -192,102 +153,5 @@ export default function ContactSection() {
         )}
       </AnimatePresence>
     </>
-  );
-}
-
-/* ───────────── FLOATING INPUT ───────────── */
-
-type FloatingInputProps = {
-  name: string;
-  label?: string;
-  placeholder: string;
-  icon?: ReactNode | null;
-  type?: string;
-  required?: boolean;
-};
-
-function FloatingInput({
-  name,
-  label,
-  placeholder,
-  icon,
-  type = "text",
-  required,
-}: FloatingInputProps) {
-  return (
-    <div className="relative">
-      {icon && (
-        <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">
-          {icon}
-        </span>
-      )}
-      <input
-        name={name}
-        type={type}
-        required={required}
-        placeholder=" "
-        className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 
-        bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
-        focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-2 text-sm`}
-      />
-      {label && (
-        <label
-          className={`absolute text-xs text-slate-600 dark:text-slate-400 top-2 
-          ${icon ? "left-10" : "left-3"} 
-          transition-all duration-200 
-          peer-focus:top-1 peer-focus:text-indigo-500 peer-placeholder-shown:top-3 
-          peer-placeholder-shown:text-sm`}
-        >
-          {label}
-        </label>
-      )}
-      <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{placeholder}</p>
-    </div>
-  );
-}
-
-/* ───────────── FLOATING TEXTAREA ───────────── */
-
-type FloatingTextareaProps = {
-  name: string;
-  label: string;
-  placeholder: string;
-  icon?: ReactNode | null;
-  required?: boolean;
-};
-
-function FloatingTextarea({
-  name,
-  label,
-  placeholder,
-  icon,
-  required,
-}: FloatingTextareaProps) {
-  return (
-    <div className="relative">
-      {icon && (
-        <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">
-          {icon}
-        </span>
-      )}
-      <textarea
-        name={name}
-        required={required}
-        placeholder=" "
-        rows={5}
-        className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 
-        bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
-        focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-3 text-sm resize-vertical`}
-      />
-      <label
-        className={`absolute text-xs text-slate-600 dark:text-slate-400 top-2 
-        ${icon ? "left-10" : "left-3"} transition-all duration-200 
-        peer-focus:top-1 peer-focus:text-indigo-500 peer-placeholder-shown:top-3 
-        peer-placeholder-shown:text-sm`}
-      >
-        {label}
-      </label>
-      <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{placeholder}</p>
-    </div>
   );
 }
