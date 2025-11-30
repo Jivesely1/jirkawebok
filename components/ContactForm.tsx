@@ -1,18 +1,28 @@
 "use client";
 
-import { useState, useMemo, type ReactNode } from "react";
+import { useEffect, useState, useMemo, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Mail, Type, MessageCircle, CheckCircle2, X } from "lucide-react";
 
-export default function ContactSection() {
+export default function ContactForm() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { questionA, questionB, solution } = useMemo(() => {
+  const [questionA, setQuestionA] = useState<number | null>(null);
+  const [questionB, setQuestionB] = useState<number | null>(null);
+  const solution = useMemo(() => {
+    if (questionA !== null && questionB !== null) {
+      return questionA + questionB;
+    }
+    return null;
+  }, [questionA, questionB]);
+
+  useEffect(() => {
     const a = Math.floor(Math.random() * 6) + 2;
     const b = Math.floor(Math.random() * 6) + 2;
-    return { questionA: a, questionB: b, solution: a + b };
+    setQuestionA(a);
+    setQuestionB(b);
   }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -23,21 +33,21 @@ export default function ContactSection() {
 
     const form = e.currentTarget;
 
-    const name = (form.elements.namedItem("name") as HTMLInputElement).value.trim();
-    const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
-    const subject = (form.elements.namedItem("subject") as HTMLInputElement).value.trim();
-    const message = (form.elements.namedItem("message") as HTMLTextAreaElement).value.trim();
-    const spamCheck = (form.elements.namedItem("spamCheck") as HTMLInputElement).value.trim();
+    const name = (form.elements.namedItem("name") as HTMLInputElement).value;
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+    const subject = (form.elements.namedItem("subject") as HTMLInputElement).value;
+    const message = (form.elements.namedItem("message") as HTMLTextAreaElement).value;
+    const spamCheck = (form.elements.namedItem("spamCheck") as HTMLInputElement).value;
     const honey = (form.elements.namedItem("honey") as HTMLInputElement).value;
 
-    if (honey !== "") {
+    if (honey.trim() !== "") {
       setLoading(false);
-      form.reset();
       setSuccess(true);
+      form.reset();
       return;
     }
 
-    if (parseInt(spamCheck) !== solution) {
+    if (solution === null || parseInt(spamCheck) !== solution) {
       setLoading(false);
       setError("Špatná odpověď na kontrolní otázku.");
       return;
@@ -46,15 +56,15 @@ export default function ContactSection() {
     const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, subject, message }),
+      body: JSON.stringify({ name, email, subject, message, honey }),
     });
 
     const data = await res.json();
     setLoading(false);
 
     if (data.ok) {
-      form.reset();
       setSuccess(true);
+      form.reset();
     } else {
       setError("Něco se nepovedlo. Zkus to prosím znovu.");
     }
@@ -65,7 +75,8 @@ export default function ContactSection() {
       <section className="w-full py-10 bg-slate-50 dark:bg-slate-900 transition-colors">
         <div className="mx-auto max-w-4xl px-4">
           <div className="mt-4 rounded-[28px] p-[1px] bg-gradient-to-br from-indigo-300/40 via-sky-200/40 to-indigo-300/40 dark:from-slate-700 dark:via-slate-800 dark:to-slate-700 shadow-xl">
-            <div className="rounded-[26px] bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl border border-white/40 dark:border-slate-700 px-4 sm:px-6 md:px-10 py-8 md:py-10">
+            <div className="rounded-[26px] bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl border border-white/40 dark:border-slate-700 px-6 md:px-10 py-8 md:py-10">
+
               <div className="text-center mb-6">
                 <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
                   Pojďme to probrat
@@ -76,9 +87,9 @@ export default function ContactSection() {
               </div>
 
               <form className="space-y-6" onSubmit={handleSubmit}>
-                <input type="text" name="honey" className="hidden" autoComplete="off" />
+                <input type="text" name="honey" className="hidden" />
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <FloatingInput name="name" label="Jméno" placeholder="Např. Jan Novák" icon={<User className="w-4 h-4" />} required />
                   <FloatingInput name="email" label="E-mail" placeholder="email@domena.cz" icon={<Mail className="w-4 h-4" />} type="email" required />
                 </div>
@@ -87,12 +98,14 @@ export default function ContactSection() {
 
                 <FloatingTextarea name="message" label="Zpráva" placeholder="Popiš stručně svůj projekt…" icon={<MessageCircle className="w-4 h-4" />} required />
 
-                <div>
-                  <label className="text-sm text-slate-600 dark:text-slate-300">
-                    Kontrolní otázka: <strong>{questionA} + {questionB}</strong> =
-                  </label>
-                  <FloatingInput name="spamCheck" placeholder="Výsledek" type="number" required />
-                </div>
+                {solution !== null && (
+                  <div>
+                    <label className="text-sm text-slate-600 dark:text-slate-300">
+                      Kontrolní otázka: <strong>{questionA} + {questionB}</strong> =
+                    </label>
+                    <FloatingInput name="spamCheck" label="" placeholder="Výsledek" icon={null} type="number" required />
+                  </div>
+                )}
 
                 <motion.button
                   whileHover={{ y: -2, scale: 1.02 }}
@@ -104,7 +117,9 @@ export default function ContactSection() {
                   {loading ? "Odesílám…" : "Odeslat zprávu"}
                 </motion.button>
 
-                {error && <p className="text-center text-sm text-red-500 mt-1">{error}</p>}
+                {error && (
+                  <p className="text-center text-sm text-red-500 mt-1">{error}</p>
+                )}
               </form>
             </div>
           </div>
@@ -113,15 +128,34 @@ export default function ContactSection() {
 
       <AnimatePresence>
         {success && (
-          <motion.div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div className="w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-8 shadow-2xl relative" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }}>
-              <button type="button" onClick={() => setSuccess(false)} className="absolute right-4 top-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-8 shadow-2xl relative"
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 40, opacity: 0 }}
+            >
+              <button
+                type="button"
+                onClick={() => setSuccess(false)}
+                className="absolute right-4 top-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
                 <X className="w-4 h-4" />
               </button>
+
               <div className="flex flex-col items-center text-center space-y-3">
                 <CheckCircle2 className="w-10 h-10 text-green-500" />
-                <h3 className="text-xl font-semibold text-slate-900 dark:text-white">Zpráva byla úspěšně odeslána!</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300">Ozvu se ti co nejdříve. Díky za důvěru.</p>
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-white">
+                  Zpráva byla úspěšně odeslána!
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Ozvu se ti co nejdříve. Díky za důvěru.
+                </p>
               </div>
             </motion.div>
           </motion.div>
@@ -131,7 +165,7 @@ export default function ContactSection() {
   );
 }
 
-/* Floating Input */
+/* ───────────── FLOATING INPUT ───────────── */
 
 type FloatingInputProps = {
   name: string;
@@ -142,7 +176,14 @@ type FloatingInputProps = {
   required?: boolean;
 };
 
-function FloatingInput({ name, label, placeholder, icon, type = "text", required }: FloatingInputProps) {
+function FloatingInput({
+  name,
+  label,
+  placeholder,
+  icon,
+  type = "text",
+  required,
+}: FloatingInputProps) {
   return (
     <div className="relative">
       {icon && <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">{icon}</span>}
@@ -151,10 +192,18 @@ function FloatingInput({ name, label, placeholder, icon, type = "text", required
         type={type}
         required={required}
         placeholder=" "
-        className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-2 text-sm`}
+        className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 
+        bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
+        focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-2 text-sm`}
       />
       {label && (
-        <label className={`absolute text-xs text-slate-600 dark:text-slate-400 top-2 ${icon ? "left-10" : "left-3"} transition-all duration-200 peer-focus:top-1 peer-focus:text-indigo-500 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm`}>
+        <label
+          className={`absolute text-xs text-slate-600 dark:text-slate-400 top-2 
+          ${icon ? "left-10" : "left-3"} 
+          transition-all duration-200 
+          peer-focus:top-1 peer-focus:text-indigo-500 peer-placeholder-shown:top-3 
+          peer-placeholder-shown:text-sm`}
+        >
           {label}
         </label>
       )}
@@ -163,7 +212,7 @@ function FloatingInput({ name, label, placeholder, icon, type = "text", required
   );
 }
 
-/* Floating Textarea */
+/* ───────────── FLOATING TEXTAREA ───────────── */
 
 type FloatingTextareaProps = {
   name: string;
@@ -173,7 +222,13 @@ type FloatingTextareaProps = {
   required?: boolean;
 };
 
-function FloatingTextarea({ name, label, placeholder, icon, required }: FloatingTextareaProps) {
+function FloatingTextarea({
+  name,
+  label,
+  placeholder,
+  icon,
+  required,
+}: FloatingTextareaProps) {
   return (
     <div className="relative">
       {icon && <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">{icon}</span>}
@@ -182,9 +237,16 @@ function FloatingTextarea({ name, label, placeholder, icon, required }: Floating
         required={required}
         placeholder=" "
         rows={5}
-        className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-3 text-sm resize-vertical`}
+        className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 
+        bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
+        focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-3 text-sm resize-vertical`}
       />
-      <label className={`absolute text-xs text-slate-600 dark:text-slate-400 top-2 ${icon ? "left-10" : "left-3"} transition-all duration-200 peer-focus:top-1 peer-focus:text-indigo-500 peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm`}>
+      <label
+        className={`absolute text-xs text-slate-600 dark:text-slate-400 top-2 
+        ${icon ? "left-10" : "left-3"} transition-all duration-200 
+        peer-focus:top-1 peer-focus:text-indigo-500 peer-placeholder-shown:top-3 
+        peer-placeholder-shown:text-sm`}
+      >
         {label}
       </label>
       <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{placeholder}</p>
