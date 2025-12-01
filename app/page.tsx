@@ -8,6 +8,7 @@ import { motion, type Variants } from "framer-motion";
 
 
 
+
 import {
   getProjects,
   getServices,
@@ -20,7 +21,9 @@ import type {
   SanityReference,
   SanitySkill,
 } from "../lib/types";
+
 import ContactSection from "../components/ContactForm";
+import Footer from "../components/Footer";
 
 const fadeInSection: Variants = {
   initial: { opacity: 0, y: 40 },
@@ -439,6 +442,7 @@ export default function PortfolioPage() {
             </h2>
 
             <ContactSection />
+             <Footer />
           </div>
         </section>
       </main>

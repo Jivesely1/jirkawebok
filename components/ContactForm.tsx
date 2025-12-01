@@ -74,8 +74,7 @@ export default function ContactForm() {
     <>
       <section className="w-full py-10 bg-slate-50 dark:bg-slate-900 transition-colors">
         <div className="mx-auto max-w-4xl px-4">
-          <div className="mt-4 rounded-[28px] p-[1px] bg-gradient-to-br from-indigo-300/40 via-sky-200/40 to-indigo-300/40 dark:from-slate-700 dark:via-slate-800 dark:to-slate-700 shadow-xl">
-            <div className="rounded-[26px] bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl border border-white/40 dark:border-slate-700 px-6 md:px-10 py-8 md:py-10">
+          <div className="mt-4 rounded-[28px] bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl p-8 md:p-10 border border-white/40 dark:border-slate-700">
 
               <div className="text-center mb-6">
                 <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
@@ -123,7 +122,7 @@ export default function ContactForm() {
               </form>
             </div>
           </div>
-        </div>
+      
       </section>
 
       <AnimatePresence>
