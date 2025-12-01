@@ -2,7 +2,14 @@
 
 import { useEffect, useState, useMemo, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Mail, Type, MessageCircle, CheckCircle2, X } from "lucide-react";
+import {
+  User,
+  Mail,
+  Type,
+  MessageCircle,
+  CheckCircle2,
+  X,
+} from "lucide-react";
 
 export default function ContactForm() {
   const [success, setSuccess] = useState(false);
@@ -35,9 +42,12 @@ export default function ContactForm() {
 
     const name = (form.elements.namedItem("name") as HTMLInputElement).value;
     const email = (form.elements.namedItem("email") as HTMLInputElement).value;
-    const subject = (form.elements.namedItem("subject") as HTMLInputElement).value;
-    const message = (form.elements.namedItem("message") as HTMLTextAreaElement).value;
-    const spamCheck = (form.elements.namedItem("spamCheck") as HTMLInputElement).value;
+    const subject = (form.elements.namedItem("subject") as HTMLInputElement)
+      .value;
+    const message = (form.elements.namedItem("message") as HTMLInputElement)
+      .value;
+    const spamCheck = (form.elements.namedItem("spamCheck") as HTMLInputElement)
+      .value;
     const honey = (form.elements.namedItem("honey") as HTMLInputElement).value;
 
     if (honey.trim() !== "") {
@@ -72,21 +82,25 @@ export default function ContactForm() {
 
   return (
     <>
-      {/* samotný card s formulářem – bez vlastního backgroundu stránky */}
       <div className="w-full">
         <div className="mx-auto max-w-3xl px-4">
-          <div className="mt-4 rounded-[28px] bg-white/80 dark:bg-slate-900/85 backdrop-blur-xl shadow-xl border border-white/10 dark:border-slate-700 px-6 md:px-10 py-8 md:py-10">
+          
+          {/* ──────────────────────────────
+              JEDNOTNÝ PAPÍROVÝ CARD STYL
+              ────────────────────────────── */}
+          
+          <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-lg p-8 md:p-10 max-w-3xl mx-auto mt-4">
+
             <div className="text-center mb-6">
               <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
                 Pojďme to probrat
               </h2>
-              <p className="mt-1 text-slate-600 dark:text-slate-300 text-sm">
+              <p className="mt-2 text-slate-600 dark:text-slate-300 text-sm">
                 Napiš mi pár informací o projektu a ozvu se ti do 24 hodin.
               </p>
             </div>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-              {/* honeypot */}
               <input type="text" name="honey" className="hidden" />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -130,7 +144,6 @@ export default function ContactForm() {
                   </label>
                   <FloatingInput
                     name="spamCheck"
-                    label=""
                     placeholder="Výsledek"
                     icon={null}
                     type="number"
@@ -150,16 +163,15 @@ export default function ContactForm() {
               </motion.button>
 
               {error && (
-                <p className="text-center text-sm text-red-500 mt-1">
-                  {error}
-                </p>
+                <p className="text-center text-sm text-red-500 mt-1">{error}</p>
               )}
             </form>
+
           </div>
         </div>
       </div>
 
-      {/* success modal */}
+      {/* Success modal */}
       <AnimatePresence>
         {success && (
           <motion.div
@@ -199,7 +211,7 @@ export default function ContactForm() {
   );
 }
 
-/* ───────────── FLOATING INPUT ───────────── */
+/* INPUT KOMPONENTA ---------------------------------------------------------- */
 
 type FloatingInputProps = {
   name: string;
@@ -231,8 +243,10 @@ function FloatingInput({
         required={required}
         placeholder=" "
         className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 
-        bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
-        focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-2 text-sm`}
+        bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
+        focus:ring-indigo-500 outline-none px-3 ${
+          icon ? "pl-10" : "pl-3"
+        } pt-5 pb-2 text-sm`}
       />
       {label && (
         <label
@@ -252,7 +266,7 @@ function FloatingInput({
   );
 }
 
-/* ───────────── FLOATING TEXTAREA ───────────── */
+/* TEXTAREA KOMPONENTA ------------------------------------------------------- */
 
 type FloatingTextareaProps = {
   name: string;
@@ -282,8 +296,10 @@ function FloatingTextarea({
         placeholder=" "
         rows={5}
         className={`w-full peer rounded-xl border border-slate-300 dark:border-slate-700 
-        bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
-        focus:ring-indigo-500 outline-none px-3 ${icon ? "pl-10" : "pl-3"} pt-5 pb-3 text-sm resize-vertical`}
+        bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm focus:ring-2 
+        focus:ring-indigo-500 outline-none px-3 ${
+          icon ? "pl-10" : "pl-3"
+        } pt-5 pb-3 text-sm resize-vertical`}
       />
       <label
         className={`absolute text-xs text-slate-600 dark:text-slate-400 top-2 
