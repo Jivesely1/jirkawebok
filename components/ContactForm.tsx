@@ -72,59 +72,94 @@ export default function ContactForm() {
 
   return (
     <>
-      <section className="w-full py-10 bg-slate-50 dark:bg-slate-900 transition-colors">
-        <div className="mx-auto max-w-4xl px-4">
-          <div className="mt-4 rounded-[28px] bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl p-8 md:p-10 border border-white/40 dark:border-slate-700">
+      {/* samotný card s formulářem – bez vlastního backgroundu stránky */}
+      <div className="w-full">
+        <div className="mx-auto max-w-3xl px-4">
+          <div className="mt-4 rounded-[28px] bg-white/80 dark:bg-slate-900/85 backdrop-blur-xl shadow-xl border border-white/10 dark:border-slate-700 px-6 md:px-10 py-8 md:py-10">
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                Pojďme to probrat
+              </h2>
+              <p className="mt-1 text-slate-600 dark:text-slate-300 text-sm">
+                Napiš mi pár informací o projektu a ozvu se ti do 24 hodin.
+              </p>
+            </div>
 
-              <div className="text-center mb-6">
-                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
-                  Pojďme to probrat
-                </h2>
-                <p className="mt-1 text-slate-600 dark:text-slate-300 text-sm">
-                  Napiš mi pár informací o projektu a ozvu se ti do 24 hodin.
-                </p>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {/* honeypot */}
+              <input type="text" name="honey" className="hidden" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <FloatingInput
+                  name="name"
+                  label="Jméno"
+                  placeholder="Např. Jan Novák"
+                  icon={<User className="w-4 h-4" />}
+                  required
+                />
+                <FloatingInput
+                  name="email"
+                  label="E-mail"
+                  placeholder="email@domena.cz"
+                  icon={<Mail className="w-4 h-4" />}
+                  type="email"
+                  required
+                />
               </div>
 
-              <form className="space-y-6" onSubmit={handleSubmit}>
-                <input type="text" name="honey" className="hidden" />
+              <FloatingInput
+                name="subject"
+                label="Předmět zprávy"
+                placeholder="Např. Nový web"
+                icon={<Type className="w-4 h-4" />}
+                required
+              />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <FloatingInput name="name" label="Jméno" placeholder="Např. Jan Novák" icon={<User className="w-4 h-4" />} required />
-                  <FloatingInput name="email" label="E-mail" placeholder="email@domena.cz" icon={<Mail className="w-4 h-4" />} type="email" required />
+              <FloatingTextarea
+                name="message"
+                label="Zpráva"
+                placeholder="Popiš stručně svůj projekt…"
+                icon={<MessageCircle className="w-4 h-4" />}
+                required
+              />
+
+              {solution !== null && (
+                <div>
+                  <label className="text-sm text-slate-600 dark:text-slate-300">
+                    Kontrolní otázka: <strong>{questionA} + {questionB}</strong> =
+                  </label>
+                  <FloatingInput
+                    name="spamCheck"
+                    label=""
+                    placeholder="Výsledek"
+                    icon={null}
+                    type="number"
+                    required
+                  />
                 </div>
+              )}
 
-                <FloatingInput name="subject" label="Předmět zprávy" placeholder="Např. Nový web" icon={<Type className="w-4 h-4" />} required />
+              <motion.button
+                whileHover={{ y: -2, scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-semibold shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {loading ? "Odesílám…" : "Odeslat zprávu"}
+              </motion.button>
 
-                <FloatingTextarea name="message" label="Zpráva" placeholder="Popiš stručně svůj projekt…" icon={<MessageCircle className="w-4 h-4" />} required />
-
-                {solution !== null && (
-                  <div>
-                    <label className="text-sm text-slate-600 dark:text-slate-300">
-                      Kontrolní otázka: <strong>{questionA} + {questionB}</strong> =
-                    </label>
-                    <FloatingInput name="spamCheck" label="" placeholder="Výsledek" icon={null} type="number" required />
-                  </div>
-                )}
-
-                <motion.button
-                  whileHover={{ y: -2, scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-semibold shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {loading ? "Odesílám…" : "Odeslat zprávu"}
-                </motion.button>
-
-                {error && (
-                  <p className="text-center text-sm text-red-500 mt-1">{error}</p>
-                )}
-              </form>
-            </div>
+              {error && (
+                <p className="text-center text-sm text-red-500 mt-1">
+                  {error}
+                </p>
+              )}
+            </form>
           </div>
-      
-      </section>
+        </div>
+      </div>
 
+      {/* success modal */}
       <AnimatePresence>
         {success && (
           <motion.div
@@ -185,7 +220,11 @@ function FloatingInput({
 }: FloatingInputProps) {
   return (
     <div className="relative">
-      {icon && <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">{icon}</span>}
+      {icon && (
+        <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">
+          {icon}
+        </span>
+      )}
       <input
         name={name}
         type={type}
@@ -206,7 +245,9 @@ function FloatingInput({
           {label}
         </label>
       )}
-      <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{placeholder}</p>
+      <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
+        {placeholder}
+      </p>
     </div>
   );
 }
@@ -230,7 +271,11 @@ function FloatingTextarea({
 }: FloatingTextareaProps) {
   return (
     <div className="relative">
-      {icon && <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">{icon}</span>}
+      {icon && (
+        <span className="absolute left-3 top-3 text-slate-400 dark:text-slate-500">
+          {icon}
+        </span>
+      )}
       <textarea
         name={name}
         required={required}
@@ -248,7 +293,9 @@ function FloatingTextarea({
       >
         {label}
       </label>
-      <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{placeholder}</p>
+      <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
+        {placeholder}
+      </p>
     </div>
   );
 }
