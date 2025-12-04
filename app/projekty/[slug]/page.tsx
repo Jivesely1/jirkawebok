@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { client } from "../../../lib/sanity.client";
 import { groq } from "next-sanity";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ExternalLink, CheckCircle2 } from "lucide-react";
 
@@ -18,7 +19,7 @@ const query = groq`
     description,
     url,
     goal,
-    workflow[],
+    workflow[] ,
     results,
     features[],
     gallery[]{ asset->{ url } },
@@ -80,12 +81,13 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
     <main className="max-w-4xl mx-auto px-6 py-20 space-y-16 text-brand-text dark:text-brand-textDark">
 
       {/* ZPĚT */}
-      <a
+      <Link
         href="/#portfolio"
+        scroll={false}
         className="flex items-center gap-2 text-brand-accent hover:text-brand-accentHover transition font-medium"
       >
         <ArrowLeft size={18} /> Zpět na portfolio
-      </a>
+      </Link>
 
       {/* HERO */}
       <section className="space-y-6">
@@ -130,7 +132,7 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
         )}
       </section>
 
-      {/* PŘEHLED PROJEKTU */}
+      {/* PŘEHLED */}
       {(project.description || project.goal) && (
         <section className="space-y-4">
           <h2 className="text-3xl font-semibold">Přehled projektu</h2>
@@ -147,7 +149,7 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
       {project.goal && (
         <section className="bg-brand-surface dark:bg-brand-surfaceDark border border-brand-border dark:border-brand-borderDark p-8 rounded-2xl shadow-card space-y-3">
           <h2 className="text-2xl font-semibold">Cíl projektu</h2>
-          <p className="text-brand-textMuted dark:text-brand-textMutedDark leading-relaxed whitespace-pre-line">
+          <p className="text-brand-textMuted dark:text-brand-textMutedDark whitespace-pre-line leading-relaxed">
             {project.goal}
           </p>
         </section>
@@ -162,7 +164,9 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
             {project.workflow.map((step, i) => (
               <li key={i} className="flex items-start gap-3">
                 <CheckCircle2 className="text-brand-accent mt-1" size={20} />
-                <span className="text-brand-textMuted dark:text-brand-textMutedDark leading-relaxed">{step}</span>
+                <span className="text-brand-textMuted dark:text-brand-textMutedDark leading-relaxed">
+                  {step}
+                </span>
               </li>
             ))}
           </ul>
@@ -184,7 +188,9 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
       {/* RESULTS */}
       {project.results && (
         <section className="bg-brand-accent/10 border border-brand-accent/40 p-8 rounded-2xl space-y-4">
-          <h2 className="text-2xl font-semibold text-brand-text dark:text-brand-textDark">Výsledky</h2>
+          <h2 className="text-2xl font-semibold text-brand-text dark:text-brand-textDark">
+            Výsledky
+          </h2>
           <p className="text-brand-textMutedDark whitespace-pre-line">
             {project.results}
           </p>
@@ -225,12 +231,13 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
           </a>
         )}
 
-        <a
+        <Link
           href="/#kontakt"
+          scroll={false}
           className="px-6 py-3 rounded-full border border-brand-accent text-brand-accent text-sm hover:bg-brand-accent/10 dark:text-brand-accentHover transition"
         >
           Chci podobný web
-        </a>
+        </Link>
       </section>
     </main>
   );
