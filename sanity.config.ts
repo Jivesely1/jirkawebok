@@ -3,12 +3,14 @@ import { deskTool } from "sanity/desk"
 import { visionTool } from "@sanity/vision"
 import { schemaTypes } from "./schemas"
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+const projectId =
+  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "sjl39asi" // fallback kvůli lokálnímu vývoji
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
 
-if (!projectId) {
-  throw new Error(
-    "Chybi NEXT_PUBLIC_SANITY_PROJECT_ID - nastavte jej v .env.local nebo ve Vercel Environment Variables."
+if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
+  // varování pro případ, že chybí vlastní ID v env
+  console.warn(
+    "Používá se fallback NEXT_PUBLIC_SANITY_PROJECT_ID (sjl39asi). Nastavte vlastní ID v .env.local nebo ve Vercel Environment Variables."
   )
 }
 
