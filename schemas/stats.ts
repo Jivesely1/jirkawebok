@@ -5,6 +5,7 @@ export default defineType({
   title: "Statistiky",
   type: "document",
   icon: () => "📊",
+
   fields: [
     {
       name: "title",
@@ -22,6 +23,7 @@ export default defineType({
         "Toto je váš hlavní dashboard pro správu portfolia. Zde najdete přehled všech vašich projektů, služeb, dovedností a referencí.",
     },
   ],
+
   preview: {
     prepare() {
       return {
@@ -31,3 +33,4 @@ export default defineType({
     },
   },
 })
+
