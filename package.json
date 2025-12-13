@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@sanity/client": "^6.29.1",
+    "@sanity/dashboard": "^5.0.0",
     "@sanity/image-url": "^1.2.0",
     "@sanity/ui": "1.9.3",
     "@vercel/analytics": "^1.5.0",

@@ -1,14 +1,16 @@
 import { defineConfig } from "sanity"
 import { structureTool } from "sanity/structure"
 import { visionTool } from "@sanity/vision"
+import { dashboardTool } from "@sanity/dashboard"
 import { schemaTypes } from "./schemas"
+import { dashboardConfig } from "./plugins/dashboard"
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "sjl39asi"
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
 
 export default defineConfig({
   name: "default",
-  title: "Portfolio Jirka Veselý",
+  title: "🎨 Portfolio Jirka Veselý",
 
   projectId,
   dataset,
@@ -16,39 +18,17 @@ export default defineConfig({
   basePath: "/studio",
 
   plugins: [
+    dashboardTool({
+      widgets: [dashboardConfig],
+    }),
     structureTool({
       structure: (S) =>
         S.list()
           .title("Správa obsahu")
           .items([
-            // 📊 Dashboard - přidáme jako první
-            S.listItem()
-              .title("📊 Dashboard")
-              .icon(() => "📊")
-              .child(
-                S.list()
-                  .title("Přehled")
-                  .items([
-                    S.listItem()
-                      .title("📈 Statistiky")
-                      .child(
-                        S.document()
-                          .schemaType("stats")
-                          .documentId("stats")
-                      ),
-                    S.divider(),
-                    S.documentTypeListItem("project").title("📁 Všechny projekty"),
-                    S.documentTypeListItem("service").title("⚙️ Všechny služby"),
-                    S.documentTypeListItem("skill").title("💡 Všechny dovednosti"),
-                    S.documentTypeListItem("testimonial").title("💬 Všechny reference"),
-                  ])
-              ),
-
-            S.divider(),
-
             // 🎨 Projekty
             S.listItem()
-              .title("📁 Projekty")
+              .title("🎨 Projekty")
               .icon(() => "🎨")
               .child(
                 S.documentTypeList("project")
@@ -64,9 +44,9 @@ export default defineConfig({
 
             S.divider(),
 
-            // ⚙️ Služby
+            // 🛠️ Služby
             S.listItem()
-              .title("⚙️ Služby")
+              .title("🛠️ Služby")
               .icon(() => "🛠️")
               .child(
                 S.documentTypeList("service")
@@ -77,9 +57,9 @@ export default defineConfig({
 
             S.divider(),
 
-            // 💡 Dovednosti
+            // ⚡ Dovednosti
             S.listItem()
-              .title("💡 Dovednosti")
+              .title("⚡ Dovednosti")
               .icon(() => "⚡")
               .child(
                 S.documentTypeList("skill")
@@ -90,9 +70,9 @@ export default defineConfig({
 
             S.divider(),
 
-            // 💬 Reference
+            // ⭐ Reference
             S.listItem()
-              .title("💬 Reference")
+              .title("⭐ Reference")
               .icon(() => "⭐")
               .child(
                 S.documentTypeList("testimonial")
@@ -109,5 +89,15 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+
+  studio: {
+    components: {
+      logo: () => (
+        <div style={{ padding: "8px", fontSize: "24px", fontWeight: "bold" }}>
+          🎨
+        </div>
+      ),
+    },
   },
 })
