@@ -1,30 +1,51 @@
 import { defineField, defineType } from "sanity"
 
+/**
+ * Kategorie dovedností
+ */
+type SkillCategory =
+  | "frontend"
+  | "backend"
+  | "design"
+  | "database"
+  | "devops"
+  | "mobile"
+  | "tools"
+
+/**
+ * Úroveň znalosti
+ */
+type SkillLevel =
+  | "beginner"
+  | "intermediate"
+  | "advanced"
+  | "expert"
+
 export default defineType({
   name: "skill",
   title: "Dovednosti",
   type: "document",
   icon: () => "⚡",
+
   fields: [
     defineField({
       name: "name",
       title: "Název technologie",
       type: "string",
-      description: "Např. 'React', 'Next.js', 'TypeScript', 'Tailwind CSS'",
       validation: (Rule) => Rule.required(),
     }),
+
     defineField({
       name: "emoji",
       title: "Ikona",
       type: "string",
-      description: "Emoji ikona technologie (např. ⚛️ React, 🔺 Vercel, 💡 JavaScript)",
       initialValue: "💡",
     }),
+
     defineField({
       name: "category",
       title: "🏷️ Kategorie",
       type: "string",
-      description: "Typ technologie",
       options: {
         list: [
           { title: "⚛️ Frontend", value: "frontend" },
@@ -35,14 +56,13 @@ export default defineType({
           { title: "📱 Mobile", value: "mobile" },
           { title: "🛠️ Nástroje", value: "tools" },
         ],
-        layout: "dropdown",
       },
     }),
+
     defineField({
       name: "level",
       title: "📊 Úroveň znalosti",
       type: "string",
-      description: "Jak dobře ovládáte tuto technologii?",
       options: {
         list: [
           { title: "⭐ Začátečník", value: "beginner" },
@@ -55,6 +75,7 @@ export default defineType({
       initialValue: "intermediate",
     }),
   ],
+
   preview: {
     select: {
       title: "name",
@@ -62,8 +83,19 @@ export default defineType({
       category: "category",
       level: "level",
     },
-    prepare({ title, emoji, category, level }) {
-      const categoryEmoji = {
+
+    prepare({
+      title,
+      emoji,
+      category,
+      level,
+    }: {
+      title?: string
+      emoji?: string
+      category?: SkillCategory
+      level?: SkillLevel
+    }) {
+      const categoryEmoji: Record<SkillCategory, string> = {
         frontend: "⚛️",
         backend: "🔧",
         design: "🎨",
@@ -71,19 +103,22 @@ export default defineType({
         devops: "☁️",
         mobile: "📱",
         tools: "🛠️",
-      }[category] || ""
+      }
 
-      const levelStars = {
+      const levelStars: Record<SkillLevel, string> = {
         beginner: "⭐",
         intermediate: "⭐⭐",
         advanced: "⭐⭐⭐",
         expert: "⭐⭐⭐⭐",
-      }[level] || ""
+      }
 
       return {
-        title: `${emoji || "💡"} ${title}`,
-        subtitle: `${categoryEmoji} ${levelStars}`,
+        title: `${emoji ?? "💡"} ${title ?? "Bez názvu"}`,
+        subtitle: `${category ? categoryEmoji[category] : ""} ${
+          level ? levelStars[level] : ""
+        }`,
       }
     },
   },
 })
+
