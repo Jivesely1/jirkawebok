@@ -129,7 +129,6 @@ export default function PortfolioPage() {
               <div className="flex flex-wrap gap-3 text-sm">
                 <Link
                   href="#kontakt"
-                  scroll={false}
                   className="rounded-full bg-indigo-600 px-6 py-2 font-semibold text-white hover:bg-indigo-500 transition"
                 >
                   Mám zájem o web
@@ -137,7 +136,6 @@ export default function PortfolioPage() {
 
                 <Link
                   href="#portfolio"
-                  scroll={false}
                   className="rounded-full border border-brand-border dark:border-brand-borderDark px-6 py-2 hover:border-brand-accent hover:text-brand-accent transition"
                 >
                   Zobrazit projekty
