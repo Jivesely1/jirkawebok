@@ -2,6 +2,7 @@ import { defineConfig } from "sanity"
 import { structureTool } from "sanity/structure"
 import { visionTool } from "@sanity/vision"
 import { schemaTypes } from "./schemas"
+import React from "react"
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "sjl39asi"
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
@@ -88,30 +89,4 @@ export default defineConfig({
     },
   },
 
-  // 🖼️ Logo a branding
-  studio: {
-    components: {
-      logo: () => {
-        return (
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            padding: "0.5rem"
-          }}>
-            <span style={{ fontSize: "1.5rem" }}>💻</span>
-            <span style={{
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-              background: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent"
-            }}>
-              Portfolio CMS
-            </span>
-          </div>
-        )
-      },
-    },
-  },
 })

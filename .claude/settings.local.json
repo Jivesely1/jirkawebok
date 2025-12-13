@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git diff:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(git pull:*)",
+      "Bash(if [ -f .env.local ])",
+      "Bash(then echo \"=== .env.local exists ===\")",
+      "Bash(else echo \"=== .env.local NOT found ===\")",
+      "Bash(fi)",
+      "Bash(find:*)",
+      "Bash(npm run dev:*)",
+      "Bash(taskkill:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}
