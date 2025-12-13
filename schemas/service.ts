@@ -1,63 +1,63 @@
 import { defineField, defineType } from "sanity"
 
+type ServicePrice =
+  | "low"
+  | "medium"
+  | "high"
+  | "premium"
+  | "custom"
+
 export default defineType({
   name: "service",
   title: "Služby",
   type: "document",
   icon: () => "🛠️",
+
   fields: [
     defineField({
       name: "title",
       title: "Název služby",
       type: "string",
-      description: "Např. 'Tvorba webů na míru', 'E-shop řešení'",
       validation: (Rule) => Rule.required(),
     }),
+
     defineField({
       name: "icon",
       title: "Ikona",
       type: "string",
-      description: "Vyberte emoji ikonu (např. 🛠️, 💻, 🎨, 🚀)",
       initialValue: "🛠️",
     }),
+
     defineField({
       name: "description",
-      title: "Hlavní popis",
+      title: "Popis",
       type: "text",
-      description: "Detailní popis služby co nabízíte",
-      rows: 4,
       validation: (Rule) => Rule.required(),
     }),
-    defineField({
-      name: "shortDescription",
-      title: "Stručný popis",
-      type: "text",
-      description: "Kratší verze (pokud chcete odlišnou)",
-      rows: 2,
-    }),
+
     defineField({
       name: "price",
-      title: "💰 Cenové rozpětí",
+      title: "Cenová úroveň",
       type: "string",
-      description: "Orientační cena služby (např. 'Od 15 000 Kč', 'Dle domluvy')",
       options: {
         list: [
-          { title: "💵 Do 10 000 Kč", value: "low" },
-          { title: "💳 10 000 - 30 000 Kč", value: "medium" },
-          { title: "💎 30 000 - 60 000 Kč", value: "high" },
-          { title: "👑 Nad 60 000 Kč", value: "premium" },
+          { title: "💵 Nízká", value: "low" },
+          { title: "💳 Střední", value: "medium" },
+          { title: "💎 Vysoká", value: "high" },
+          { title: "👑 Premium", value: "premium" },
           { title: "🤝 Dle domluvy", value: "custom" },
         ],
       },
     }),
+
     defineField({
       name: "active",
-      title: "✅ Aktivní nabídka",
+      title: "Aktivní",
       type: "boolean",
-      description: "Nabízíte tuto službu aktuálně?",
       initialValue: true,
     }),
   ],
+
   preview: {
     select: {
       title: "title",
@@ -66,19 +66,37 @@ export default defineType({
       active: "active",
       price: "price",
     },
-    prepare({ title, icon, description, active, price }) {
-      const priceEmoji = {
+
+    prepare({
+      title,
+      icon,
+      description,
+      active,
+      price,
+    }: {
+      title?: string
+      icon?: string
+      description?: string
+      active?: boolean
+      price?: ServicePrice
+    }) {
+      const priceEmoji: Record<ServicePrice, string> = {
         low: "💵",
         medium: "💳",
         high: "💎",
         premium: "👑",
         custom: "🤝",
-      }[price] || ""
+      }
 
       return {
-        title: `${icon || "🛠️"} ${title} ${!active ? "(Neaktivní)" : ""}`,
-        subtitle: `${priceEmoji} ${description?.substring(0, 60)}...`,
+        title: `${icon ?? "🛠️"} ${title ?? "Bez názvu"}${
+          active === false ? " (Neaktivní)" : ""
+        }`,
+        subtitle: `${price ? priceEmoji[price] : ""} ${
+          description ? description.slice(0, 60) + "…" : ""
+        }`,
       }
     },
   },
 })
+
