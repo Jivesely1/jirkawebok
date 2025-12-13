@@ -34,17 +34,52 @@ export default defineType({
       description: "Kratší verze pro jiné účely (volitelné)",
       rows: 3,
     }),
+    defineField({
+      name: "rating",
+      title: "⭐ Hodnocení",
+      type: "number",
+      description: "Kolik hvězdiček od 1 do 5",
+      validation: (Rule) => Rule.min(1).max(5).integer(),
+      initialValue: 5,
+      options: {
+        list: [
+          { title: "⭐ (1)", value: 1 },
+          { title: "⭐⭐ (2)", value: 2 },
+          { title: "⭐⭐⭐ (3)", value: 3 },
+          { title: "⭐⭐⭐⭐ (4)", value: 4 },
+          { title: "⭐⭐⭐⭐⭐ (5)", value: 5 },
+        ],
+      },
+    }),
+    defineField({
+      name: "featured",
+      title: "🌟 Zvýrazněná reference",
+      type: "boolean",
+      description: "Zobrazit na hlavní stránce?",
+      initialValue: false,
+    }),
+    defineField({
+      name: "projectLink",
+      title: "🔗 Odkaz na projekt",
+      type: "reference",
+      to: [{ type: "project" }],
+      description: "Propojte s projektem z portfolia",
+    }),
   ],
   preview: {
     select: {
       title: "name",
       subtitle: "company",
       text: "text",
+      rating: "rating",
+      featured: "featured",
     },
-    prepare({ title, subtitle, text }) {
+    prepare({ title, subtitle, text, rating, featured }) {
+      const stars = "⭐".repeat(rating || 5)
+
       return {
-        title: `⭐ ${title}`,
-        subtitle: subtitle || "Reference",
+        title: `${featured ? "🌟 " : ""}${title}`,
+        subtitle: `${subtitle || "Reference"} • ${stars}`,
         description: text?.substring(0, 80) + "...",
       }
     },

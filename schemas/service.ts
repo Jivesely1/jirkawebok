@@ -35,17 +35,49 @@ export default defineType({
       description: "Kratší verze (pokud chcete odlišnou)",
       rows: 2,
     }),
+    defineField({
+      name: "price",
+      title: "💰 Cenové rozpětí",
+      type: "string",
+      description: "Orientační cena služby (např. 'Od 15 000 Kč', 'Dle domluvy')",
+      options: {
+        list: [
+          { title: "💵 Do 10 000 Kč", value: "low" },
+          { title: "💳 10 000 - 30 000 Kč", value: "medium" },
+          { title: "💎 30 000 - 60 000 Kč", value: "high" },
+          { title: "👑 Nad 60 000 Kč", value: "premium" },
+          { title: "🤝 Dle domluvy", value: "custom" },
+        ],
+      },
+    }),
+    defineField({
+      name: "active",
+      title: "✅ Aktivní nabídka",
+      type: "boolean",
+      description: "Nabízíte tuto službu aktuálně?",
+      initialValue: true,
+    }),
   ],
   preview: {
     select: {
       title: "title",
-      subtitle: "icon",
+      icon: "icon",
       description: "description",
+      active: "active",
+      price: "price",
     },
-    prepare({ title, subtitle, description }) {
+    prepare({ title, icon, description, active, price }) {
+      const priceEmoji = {
+        low: "💵",
+        medium: "💳",
+        high: "💎",
+        premium: "👑",
+        custom: "🤝",
+      }[price] || ""
+
       return {
-        title: `${subtitle || "🛠️"} ${title}`,
-        subtitle: description?.substring(0, 60) + "...",
+        title: `${icon || "🛠️"} ${title} ${!active ? "(Neaktivní)" : ""}`,
+        subtitle: `${priceEmoji} ${description?.substring(0, 60)}...`,
       }
     },
   },

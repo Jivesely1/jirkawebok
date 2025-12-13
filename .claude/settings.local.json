@@ -15,7 +15,12 @@
       "Bash(taskkill:*)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npm install:*)",
+      "Bash(timeout /t 10)",
+      "Bash(if exist .next rmdir /s /q .next)",
+      "Bash(if [ -d .next ])",
+      "Bash(then rm -rf .next)"
     ]
   }
 }

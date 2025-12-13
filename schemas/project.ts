@@ -127,12 +127,58 @@ export default defineType({
       type: "number",
       description: "Ve kterém roce byl projekt dokončen",
       group: "details",
+      validation: (Rule) =>
+        Rule.min(2020)
+          .max(new Date().getFullYear())
+          .warning("Projekt je z minulosti - zkontrolujte datum"),
+    }),
+    defineField({
+      name: "status",
+      title: "Stav projektu",
+      type: "string",
+      description: "Aktuální stav projektu",
+      options: {
+        list: [
+          { title: "✅ Hotovo", value: "completed" },
+          { title: "🚧 V procesu", value: "in-progress" },
+          { title: "⏸️ Pozastaveno", value: "paused" },
+          { title: "🎯 Plánováno", value: "planned" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "completed",
+      group: "details",
+    }),
+    defineField({
+      name: "featured",
+      title: "⭐ Zvýrazněný projekt",
+      type: "boolean",
+      description: "Zobrazit tento projekt na hlavní stránce?",
+      initialValue: false,
+      group: "details",
     }),
   ],
   preview: {
     select: {
       title: "title",
       media: "image",
+      year: "year",
+      status: "status",
+      featured: "featured",
+    },
+    prepare({ title, media, year, status, featured }) {
+      const statusEmoji = {
+        completed: "✅",
+        "in-progress": "🚧",
+        paused: "⏸️",
+        planned: "🎯",
+      }[status] || ""
+
+      return {
+        title: `${featured ? "⭐ " : ""}${title}`,
+        subtitle: `${year || "Bez roku"} ${statusEmoji}`,
+        media,
+      }
     },
   },
 })
