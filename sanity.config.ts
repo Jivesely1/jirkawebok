@@ -1,5 +1,5 @@
 import { defineConfig } from "sanity"
-import { deskTool } from "sanity/desk"
+import { structureTool } from "sanity/structure"
 import { visionTool } from "@sanity/vision"
 import { schemaTypes } from "./schemas"
 
@@ -16,7 +16,7 @@ export default defineConfig({
   basePath: "/studio", // Studio bude na /studio route
 
   plugins: [
-    deskTool(),
+    structureTool(), // Správný název v Sanity v3
     visionTool(), // GROQ playground pro testování queries
   ],
 
