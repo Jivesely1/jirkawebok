@@ -12,24 +12,24 @@ export default {
       colors: {
         brand: {
           // pozadí
-          bg: "#f5f7fb",       // hlavní světlejší background
-          bgDark: "#0b0e14",   // deep navy dark
+          bg: "#f5f7fb",       // světle modrošedé pozadí
+          bgDark: "#0b0e14",   // velmi tmavé pozadí (deep navy)
 
           // panely / karty
-          surface: "#ffffff",
-          surfaceDark: "#11151c",
+          surface: "#ffffff",      // jasné bílé panely
+          surfaceDark: "#11151c",  // tmavé panely s dobrou čitelností
 
-          // text
-          text: "#0f172a",
-          textMuted: "#4b5563",
-          textDark: "#e5e7eb",
-          textMutedDark: "#9ca3af",
+          // ===== TEXT — OPRAVENO NA KONTRASTNÍ =====
+          text: "#0f172a",          // slate-900 – primární text (perfektní kontrast)
+          textMuted: "#374151",     // slate-700 – LEPŠÍ než původní #4b5563
+          textDark: "#f3f4f6",      // slate-100 – čitelné v dark mode
+          textMutedDark: "#d1d5db", // slate-300 – ztlumené, ale dobře viditelné
 
           // border
-          border: "#e5e7eb",
-          borderDark: "#1f2937",
+          border: "#e5e7eb",        // slate-200
+          borderDark: "#1f2937",    // slate-800
 
-          // akcent (brand)
+          // akcent
           accent: "#6366f1",
           accentHover: "#4f46e5",
         },

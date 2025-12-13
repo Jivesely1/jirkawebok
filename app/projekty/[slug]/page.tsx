@@ -1,13 +1,14 @@
 // app/projekty/[slug]/page.tsx
 "use client";
 
-import { notFound } from "next/navigation";
+import { notFound } from "next/navigation";  
 import { client } from "../../../lib/sanity.client";
 import { groq } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ExternalLink, CheckCircle2 } from "lucide-react";
+
 
 const query = groq`
   *[_type == "project" && slug.current == $slug][0]{
@@ -83,7 +84,6 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
       {/* ZPĚT */}
       <Link
         href="/#portfolio"
-        scroll={false}
         className="flex items-center gap-2 text-brand-accent hover:text-brand-accentHover transition font-medium"
       >
         <ArrowLeft size={18} /> Zpět na portfolio
@@ -233,7 +233,6 @@ export default function ProjectDetailPage({ params }: ProjectPageProps) {
 
         <Link
           href="/#kontakt"
-          scroll={false}
           className="px-6 py-3 rounded-full border border-brand-accent text-brand-accent text-sm hover:bg-brand-accent/10 dark:text-brand-accentHover transition"
         >
           Chci podobný web
