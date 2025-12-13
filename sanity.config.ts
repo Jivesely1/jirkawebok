@@ -90,14 +90,4 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
   },
-
-  studio: {
-    components: {
-      logo: () => (
-        <div style={{ padding: "8px", fontSize: "24px", fontWeight: "bold" }}>
-          🎨
-        </div>
-      ),
-    },
-  },
 })
