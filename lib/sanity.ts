@@ -1,12 +1,5 @@
-import { createClient } from "next-sanity"
-
-// Sanity klient (env → funguje lokálně i na Vercelu)
-export const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION!,
-  useCdn: true,
-})
+// 📡 Import Sanity klienta ze sdíleného souboru
+import { client } from "./sanity.client"
 
 // 🧩 Typy dat
 export interface SanityProject {
