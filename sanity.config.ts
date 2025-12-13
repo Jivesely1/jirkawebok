@@ -77,16 +77,4 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
   },
-
-  // 🎨 Vlastní barevné téma
-  theme: {
-    colors: {
-      primary: {
-        base: "#6366f1", // Indigo
-        dark: "#4f46e5",
-        light: "#818cf8",
-      },
-    },
-  },
-
 })
