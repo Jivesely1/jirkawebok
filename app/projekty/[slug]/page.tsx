@@ -1,139 +1,174 @@
-// app/projekty/[slug]/page.tsx
-"use client";
-
-import { notFound } from "next/navigation";  
-import { client } from "../../../lib/sanity.client";
-import { groq } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { ArrowLeft, ExternalLink, CheckCircle2 } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import { client } from "@/lib/sanity";
 
-
-const query = groq`
-  *[_type == "project" && slug.current == $slug][0]{
-    _id,
-    title,
-    slug,
-    mainImage{ asset->{ url } },
-    shortDescription,
-    description,
-    url,
-    goal,
-    workflow[] ,
-    results,
-    features[],
-    gallery[]{ asset->{ url } },
-    client,
-    year
-  }
-`;
-
-type SanityImageRef = {
-  asset?: { url?: string };
-};
-
-type Project = {
-  _id: string;
-  title: string;
-  slug?: { current?: string };
-  mainImage?: SanityImageRef;
-  shortDescription?: string;
-  description?: string;
-  url?: string;
-  goal?: string;
-  workflow?: string[];
-  results?: string;
-  features?: string[];
-  gallery?: SanityImageRef[];
-  client?: string;
-  year?: number;
-};
-
-type ProjectPageProps = {
+export default async function ProjectDetailPage({
+  params,
+}: {
   params: { slug: string };
-};
+}) {
+  const project = await client.fetch(
+    `
+    *[_type == "project" && slug.current == $slug][0]{
+      title,
+      shortDescription,
+      goal,
+      workflow,
+      features,
+      results,
+      gallery[]{
+        asset->{url}
+      },
+      url
+    }
+  `,
+    { slug: params.slug }
+  );
 
-export default function ProjectDetailPage({ params }: ProjectPageProps) {
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    client
-      .fetch<Project | null>(query, { slug: params.slug })
-      .then((res) => {
-        if (!res) notFound();
-        setProject(res);
-      })
-      .finally(() => setLoading(false));
-  }, [params.slug]);
-
-  if (loading) {
-    return (
-      <main className="max-w-4xl mx-auto px-6 py-24 text-center text-brand-textMuted dark:text-brand-textMutedDark">
-        Načítám projekt...
-      </main>
-    );
+  if (!project) {
+    return null;
   }
-
-  if (!project) return null;
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-20 space-y-16 text-brand-text dark:text-brand-textDark">
-
-      {/* ZPĚT */}
-      <Link
-        href="/#portfolio"
-        className="flex items-center gap-2 text-brand-accent hover:text-brand-accentHover transition font-medium"
-      >
-        <ArrowLeft size={18} /> Zpět na portfolio
-      </Link>
-
-      {/* HERO */}
-      <section className="space-y-6">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+      {/* HEADER */}
+      <header className="space-y-4">
+        <h1 className="text-4xl font-bold text-slate-900">
           {project.title}
         </h1>
 
         {project.shortDescription && (
-          <p className="text-lg text-brand-textMuted dark:text-brand-textMutedDark max-w-2xl">
+          <p className="text-lg text-slate-600">
             {project.shortDescription}
           </p>
         )}
+      </header>
 
-        {/* INFO BAR */}
-        <div className="flex flex-wrap gap-6 pt-2 text-sm text-brand-textMuted dark:text-brand-textMutedDark">
-          {project.client && (
-            <p>
-              <strong className="text-brand-text dark:text-brand-textDark">Klient:</strong>{" "}
-              {project.client}
-            </p>
-          )}
-          {project.year && (
-            <p>
-              <strong className="text-brand-text dark:text-brand-textDark">Rok:</strong>{" "}
-              {project.year}
-            </p>
-          )}
-        </div>
-
-        {/* HERO IMAGE */}
-        {project.mainImage?.asset?.url && (
-          <div className="rounded-3xl overflow-hidden shadow-card border border-brand-border dark:border-brand-borderDark">
-            <Image
-              src={project.mainImage.asset.url}
-              alt={project.title}
-              width={1600}
-              height={900}
-              className="w-full object-cover"
-              priority
-            />
-          </div>
-        )}
-      </section>
-
-      {/* PŘEHLED */}
-      {(project.description || project.goal) && (
+      {/* GOAL */}
+      {project.goal && (
         <section className="space-y-4">
-          <h2 className="text-3xl font-semibold">Přehled projektu</h2>
+          <h2 className="text-2xl font-semibold text-slate-900">
+            Cíl projektu
+          </h2>
+          <p className="text-slate-700 whitespace-pre-line leading-relaxed">
+            {project.goal}
+          </p>
+        </section>
+      )}
 
+      {/* WORKFLOW */}
+      {project.workflow && project.workflow.length > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold text-slate-900">
+            Proces &amp; workflow
+          </h2>
+          <ul className="list-disc list-inside space-y-2 text-slate-700">
+            {project.workflow.map((step: string, i: number) => (
+              <li key={i}>{step}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* FEATURES */}
+      {project.features && project.features.length > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold text-slate-900">
+            Co jsem vytvořil / hlavní přínosy
+          </h2>
+          <ul className="list-disc list-inside space-y-2 text-slate-700">
+            {project.features.map((feature: string, i: number) => (
+              <li key={i}>{feature}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* RESULTS */}
+      {project.results && (
+        <section className="
+          bg-white
+          border-l-4 border-brand-accent
+          p-8
+          rounded-2xl
+          space-y-4
+          shadow-soft
+        ">
+          <h2 className="text-2xl font-semibold text-slate-900">
+            Výsledky
+          </h2>
+          <p className="text-slate-700 whitespace-pre-line leading-relaxed">
+            {project.results}
+          </p>
+        </section>
+      )}
+
+      {/* GALERIE */}
+      {project.gallery && project.gallery.length > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold text-slate-900">
+            Ukázky &amp; galerie
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {project.gallery.map((img: any, index: number) =>
+              img.asset?.url ? (
+                <Image
+                  key={index}
+                  src={img.asset.url}
+                  alt={`${project.title} – obrázek ${index + 1}`}
+                  width={800}
+                  height={600}
+                  className="rounded-xl shadow-soft object-cover"
+                />
+              ) : null
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* CTA */}
+      <section className="flex flex-wrap gap-4 pt-6">
+        {project.url && (
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noreferrer"
+            className="
+              px-6 py-3
+              rounded-full
+              bg-brand-accent
+              hover:bg-brand-accentHover
+              text-white
+              text-sm
+              flex
+              items-center
+              gap-2
+              shadow-soft
+              transition
+            "
+          >
+            <ExternalLink size={18} />
+            Otevřít projekt
+          </a>
+        )}
+
+        <Link
+          href="/#kontakt"
+          className="
+            px-6 py-3
+            rounded-full
+            border border-slate-300
+            text-slate-900
+            text-sm
+            hover:bg-slate-100
+            transition
+          "
+        >
+          Chci podobný web
+        </Link>
+      </section>
+    </main>
+  );
+}
