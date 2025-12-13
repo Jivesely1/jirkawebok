@@ -1,10 +1,8 @@
 import { DashboardIcon } from "@sanity/icons"
 import { Card, Stack, Heading, Grid, Button, Box, Text, Flex } from "@sanity/ui"
 import { useEffect, useState } from "react"
-import { useRouter } from "sanity/router"
 
 export function DashboardWidget() {
-  const router = useRouter()
   const [stats, setStats] = useState({
     projects: 0,
     services: 0,
@@ -41,7 +39,7 @@ export function DashboardWidget() {
       count: stats.projects,
       icon: "🎨",
       color: "#6366f1",
-      path: "/project",
+      type: "project",
       description: "Spravujte své portfolio projektů",
     },
     {
@@ -49,7 +47,7 @@ export function DashboardWidget() {
       count: stats.services,
       icon: "🛠️",
       color: "#8b5cf6",
-      path: "/service",
+      type: "service",
       description: "Vaše nabízené služby",
     },
     {
@@ -57,7 +55,7 @@ export function DashboardWidget() {
       count: stats.skills,
       icon: "⚡",
       color: "#ec4899",
-      path: "/skill",
+      type: "skill",
       description: "Technologie a nástroje",
     },
     {
@@ -65,7 +63,7 @@ export function DashboardWidget() {
       count: stats.testimonials,
       icon: "⭐",
       color: "#f59e0b",
-      path: "/testimonial",
+      type: "testimonial",
       description: "Hodnocení od klientů",
     },
   ]
@@ -84,6 +82,8 @@ export function DashboardWidget() {
           {cards.map((card) => (
             <Card
               key={card.title}
+              as="a"
+              href={`/studio/structure/${card.type}`}
               padding={4}
               radius={3}
               shadow={1}
@@ -92,9 +92,9 @@ export function DashboardWidget() {
                 border: `2px solid ${card.color}40`,
                 cursor: "pointer",
                 transition: "all 0.2s ease",
+                textDecoration: "none",
               }}
               tone="transparent"
-              onClick={() => router.navigate(card.path)}
             >
               <Stack space={3}>
                 <Flex align="center" justify="space-between">
@@ -115,19 +115,6 @@ export function DashboardWidget() {
                     {card.description}
                   </Text>
                 </Box>
-                <Button
-                  text="Otevřít"
-                  mode="ghost"
-                  tone="primary"
-                  style={{
-                    background: card.color,
-                    color: "white",
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    router.navigate(card.path)
-                  }}
-                />
               </Stack>
             </Card>
           ))}
@@ -138,6 +125,8 @@ export function DashboardWidget() {
             <Heading size={2}>🚀 Rychlé akce</Heading>
             <Grid columns={[1, 2]} gap={3}>
               <Button
+                as="a"
+                href="/studio/intent/create/template=project;type=project"
                 text="➕ Nový projekt"
                 tone="positive"
                 mode="default"
@@ -147,9 +136,10 @@ export function DashboardWidget() {
                   padding: "16px",
                   fontSize: "16px",
                 }}
-                onClick={() => router.navigate("/intent/create/template=project")}
               />
               <Button
+                as="a"
+                href="/studio/intent/create/template=service;type=service"
                 text="➕ Nová služba"
                 tone="primary"
                 mode="default"
@@ -159,9 +149,10 @@ export function DashboardWidget() {
                   padding: "16px",
                   fontSize: "16px",
                 }}
-                onClick={() => router.navigate("/intent/create/template=service")}
               />
               <Button
+                as="a"
+                href="/studio/intent/create/template=skill;type=skill"
                 text="➕ Nová dovednost"
                 tone="caution"
                 mode="default"
@@ -171,9 +162,10 @@ export function DashboardWidget() {
                   padding: "16px",
                   fontSize: "16px",
                 }}
-                onClick={() => router.navigate("/intent/create/template=skill")}
               />
               <Button
+                as="a"
+                href="/studio/intent/create/template=testimonial;type=testimonial"
                 text="➕ Nová reference"
                 tone="critical"
                 mode="default"
@@ -183,7 +175,6 @@ export function DashboardWidget() {
                   padding: "16px",
                   fontSize: "16px",
                 }}
-                onClick={() => router.navigate("/intent/create/template=testimonial")}
               />
             </Grid>
           </Stack>
